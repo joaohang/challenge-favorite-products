@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  api:
+    build:
+      context: ..
+      dockerfile: infra/Dockerfile
+    command: ["api"]
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql://${DB_USER}:${DB_PASS}@${DB_HOST}:${DB_PORT}/${DB_NAME}
+      - REDIS_URL=redis://${REDIS_HOST}:${REDIS_PORT}/${REDIS_DB}
+    depends_on:
+      - db
+      - redis
+
+  db:
+    image: postgres:18
+    environment:
+      - POSTGRES_DB=favorite_products
+      - POSTGRES_USER=challenge
+      - POSTGRES_PASSWORD=I00OUjvpedxVeJq1
+
+  redis:
+    image: redis:8.2
