@@ -32,10 +32,10 @@ test-cov: ## Executando todos os testes e vericando code coverage
 	poetry run pytest --cov=app
 
 run-build-containers:
-	docker compose build
+	docker compose -f infra/docker-compose.yml build
 
 run-containers: ## Sobe todos os containers necessários
-	docker compose -f infra/docker-compose.yml --env-file infra/.env up
+	docker compose -f infra/docker-compose.yml --env-file .env up
 
 lint: ## Executando o lint
 	poetry run black app/
