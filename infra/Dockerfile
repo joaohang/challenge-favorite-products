@@ -17,7 +17,7 @@ ENV PYTHONPATH=/app
 EXPOSE 8000
 
 COPY ../infra/docker-entrypoint.sh /usr/local/bin/
-COPY ../infra/.env /app/.env
+COPY ../.env /app/.env
 
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 

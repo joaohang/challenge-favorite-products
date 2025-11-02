@@ -12,7 +12,7 @@ import sys
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 from app.infrastructure.database.postgres import Base, DATABASE_URL
-from app.domain.models import *
+from app.infrastructure.database.models import *
 
 config = context.config
 

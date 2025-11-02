@@ -5,6 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.core.configs.settings import settings
 
 from app.presentation.api.routes.health import router as health_router
+from app.presentation.api.routes.customer import router as customer_router
 
 app = FastAPI(
     title=settings.app_name,
@@ -22,7 +23,7 @@ app.add_middleware(
 )
 
 app.include_router(health_router)
-
+app.include_router(customer_router)
 
 if __name__ == "__main__":
     uvicorn.run(

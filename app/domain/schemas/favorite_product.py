@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 
 class FavoriteProductCreate(BaseModel):
@@ -7,9 +7,7 @@ class FavoriteProductCreate(BaseModel):
 
 
 class FavoriteProductRead(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
     id: int
     customer_id: int
     product_id: str
-
-    class Config:
-        orm_mode = True
