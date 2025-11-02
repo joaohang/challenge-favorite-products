@@ -14,6 +14,12 @@ class Settings(BaseSettings):
     host: str = "0.0.0.0"
     port: int = 8000
 
+    # Auth
+    api_token: str = "fake-token"
+    jwt_secret_key: str = "fake-secret"
+    jwt_algorithm: str = "HS256"
+    jwt_access_token_expire_minutes: int = 30
+
     # DATABASE
     db_user: str = "challenge"
     db_pass: str = "I00OUjvpedxVeJq1"

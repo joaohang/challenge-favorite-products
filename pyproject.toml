@@ -23,6 +23,9 @@ pydantic-settings = "^2.11.0"
 email-validator = "^2.3.0"
 rq = "^2.6.0"
 requests = "^2.32.5"
+python-jose = "^3.5.0"
+passlib = "^1.7.4"
+types-python-jose = "^3.5.0.20250531"
 
 [tool.poetry.group.dev.dependencies]
 mypy = "^1.8.0"

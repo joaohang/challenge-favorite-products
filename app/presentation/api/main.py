@@ -1,5 +1,5 @@
 import uvicorn
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.core.configs.settings import settings
@@ -15,6 +15,8 @@ from app.presentation.api.routes.customer_favorite_product import (
 from app.presentation.api.middlewares.exception_handler import (
     catch_exceptions_middleware,
 )
+from app.presentation.api.security.auth import token_validator
+from app.presentation.api.routes.auth import router as auth_router
 
 app = FastAPI(
     title=settings.app_name,
@@ -35,12 +37,24 @@ app.add_middleware(
 
 
 app.include_router(health_router, tags=["Service Health"])
-app.include_router(customer_router, prefix="/v1", tags=["Customer Routes"])
+app.include_router(auth_router, tags=["Authentication"])
 app.include_router(
-    favorite_product_router, prefix="/v1", tags=["Favorite Product Routes"]
+    customer_router,
+    prefix="/v1",
+    tags=["Customer Routes"],
+    dependencies=[Depends(token_validator)],
 )
 app.include_router(
-    customer_favorite_product_router, prefix="/v1/bff", tags=["BFF Routes"]
+    favorite_product_router,
+    prefix="/v1",
+    tags=["Favorite Product Routes"],
+    dependencies=[Depends(token_validator)],
+)
+app.include_router(
+    customer_favorite_product_router,
+    prefix="/v1/bff",
+    tags=["BFF Routes"],
+    dependencies=[Depends(token_validator)],
 )
 
 if __name__ == "__main__":
