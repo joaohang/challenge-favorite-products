@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Tuple
 from rq import Queue
 from rq.job import Job
 
@@ -23,9 +23,9 @@ class FavoriteProductService:
         self.redis_rq = redis_rq
 
     def get_customer_favorites(
-        self, customer_id: int
-    ) -> List[FavoriteProduct]:
-        return self.repository.get_by_customer(customer_id)
+        self, customer_id: int, skip: int = 0, limit: int = 10
+    ) -> Tuple[List[FavoriteProduct], int]:
+        return self.repository.get_by_customer(customer_id, skip, limit)
 
     def get_favorite_by_id(self, favorite_id: int) -> FavoriteProduct:
         favorite = self.repository.get_by_id(favorite_id)

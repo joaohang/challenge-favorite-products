@@ -1,5 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, Path, status
-from typing import List
+from fastapi import APIRouter, Depends, HTTPException, Path, status, Query
 
 from app.domain.services.favorite_product import FavoriteProductService
 from app.domain.schemas.favorite_product import (
@@ -7,19 +6,36 @@ from app.domain.schemas.favorite_product import (
     FavoriteProduct,
 )
 from app.core.dependencies.favorite_product import get_favorite_product_service
+from app.domain.schemas.pagination import PaginatedResponse
 
 router = APIRouter()
 
 
 @router.get(
     "/favorites/customers/{customer_id}",
-    response_model=List[FavoriteProduct],
+    response_model=PaginatedResponse[FavoriteProduct],
 )
 def get_customer_favorites(
     customer_id: int = Path(..., ge=1, description="Customer ID"),
+    page: int = Query(default=1, ge=1, description="Page number"),
+    page_size: int = Query(
+        default=10, ge=1, le=100, description="Items per page"
+    ),
     service: FavoriteProductService = Depends(get_favorite_product_service),
-) -> List[FavoriteProduct]:
-    return service.get_customer_favorites(customer_id)
+) -> PaginatedResponse[FavoriteProduct]:
+    skip = (page - 1) * page_size
+    favorites, total = service.get_customer_favorites(
+        customer_id=customer_id,
+        skip=skip,
+        limit=page_size,
+    )
+
+    return PaginatedResponse.create(
+        items=favorites,
+        total=total,
+        page=page,
+        page_size=page_size,
+    )
 
 
 @router.get(

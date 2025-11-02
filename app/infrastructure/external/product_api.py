@@ -1,60 +1,94 @@
 import requests
-from typing import Optional, Dict, Any
+import json
+from typing import Optional, Dict, Any, List
+from concurrent.futures import ThreadPoolExecutor, as_completed
 import redis
 from app.core.configs.settings import settings
+from app.domain.interfaces.product_api import IProductAPI
 
 
-class ProductAPIClient:
+class ProductAPI(IProductAPI):
     def __init__(self, redis_client: redis.Redis):
         self.base_url = settings.product_api_url
         self.redis = redis_client
         self.cache_ttl = settings.cache_ttl_seconds
-        self.timeout = 5
+        self.timeout = settings.api_timeout_seconds
+        self.max_concurrent_requests = settings.max_concurrent_requests
 
-    def _get_cache_key(self, product_id: str) -> str:
-        return f"product:exists:{product_id}"
+    def _get_product_cache_key(self, product_id: str) -> str:
+        return f"product:data:{product_id}"
 
-    def _check_cache(self, product_id: str) -> Optional[bool]:
-        key = self._get_cache_key(product_id)
+    def _get_cached_product_data(
+        self, product_id: str
+    ) -> Optional[Dict[str, Any]]:
+        key = self._get_product_cache_key(product_id)
         cached = self.redis.get(key)
-        if cached is not None:
-            return cached == "1"
+        if cached:
+            cached_str = str(cached) if not isinstance(cached, str) else cached
+            return json.loads(cached_str)  # type: ignore[no-any-return]
         return None
 
-    def _cache_product(self, product_id: str, exists: bool) -> None:
-        key = self._get_cache_key(product_id)
-        value = "1" if exists else "0"
-        self.redis.setex(key, self.cache_ttl, value)
-
-    def product_exists(self, product_id: str) -> bool:
-        cached_result = self._check_cache(product_id)
-        if cached_result is not None:
-            return cached_result
-
-        try:
-            url = f"{self.base_url}/{product_id}/"
-            print(f"url -> {url}")
-            response = requests.get(url, timeout=self.timeout)
-            print(f"response -> {response}")
-            exists = response.status_code == 200
-
-            self._cache_product(product_id, exists)
-
-            return exists
-
-        except requests.Timeout:
-            raise ValueError(f"Timeout checking product {product_id}")
-        except requests.RequestException as e:
-            raise ValueError(f"Error checking product {product_id}: {str(e)}")
+    def _cache_product_data(
+        self, product_id: str, data: Optional[Dict[str, Any]]
+    ) -> None:
+        key = self._get_product_cache_key(product_id)
+        if data is None:
+            self.redis.setex(key, self.cache_ttl, "")
+        else:
+            self.redis.setex(key, self.cache_ttl, json.dumps(data))
 
     def get_product(self, product_id: str) -> Optional[Dict[str, Any]]:
+        key = self._get_product_cache_key(product_id)
+        cached = self.redis.get(key)
+
+        if cached is not None:
+            if cached == "":
+                return None
+            cached_str = str(cached) if not isinstance(cached, str) else cached
+            return json.loads(cached_str)  # type: ignore[no-any-return]
+
         try:
             url = f"{self.base_url}/{product_id}/"
             response = requests.get(url, timeout=self.timeout)
 
             if response.status_code == 200:
-                return response.json()
+                data = response.json()
+
+                if "id" in data:
+                    data["id"] = str(data["id"])
+
+                self._cache_product_data(product_id, data)
+                return data  # type: ignore[no-any-return]
+
+            self._cache_product_data(product_id, None)
             return None
 
         except requests.RequestException:
             return None
+
+    def _fetch_single_product(
+        self, product_id: str
+    ) -> tuple[str, Optional[Dict[str, Any]]]:
+        data = self.get_product(product_id)
+        return product_id, data
+
+    def get_products_batch(
+        self, product_ids: List[str]
+    ) -> Dict[str, Optional[Dict[str, Any]]]:
+        results: Dict[str, Optional[Dict[str, Any]]] = {}
+
+        with ThreadPoolExecutor(
+            max_workers=self.max_concurrent_requests
+        ) as executor:
+            future_to_id = {
+                executor.submit(
+                    self._fetch_single_product, product_id
+                ): product_id
+                for product_id in product_ids
+            }
+
+            for future in as_completed(future_to_id):
+                product_id, data = future.result()
+                results[product_id] = data
+
+        return results

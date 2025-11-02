@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import List, Optional
+from typing import List, Optional, Tuple
 from app.domain.schemas.favorite_product import FavoriteProduct
 
 
@@ -9,7 +9,9 @@ class IFavoriteProductRepository(ABC):
         pass
 
     @abstractmethod
-    def get_by_customer(self, customer_id: int) -> List[FavoriteProduct]:
+    def get_by_customer(
+        self, customer_id: int, skip: int = 0, limit: int = 100
+    ) -> Tuple[List[FavoriteProduct], int]:
         pass
 
     @abstractmethod

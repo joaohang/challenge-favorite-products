@@ -8,6 +8,7 @@ class Settings(BaseSettings):
     log_level: str = "info"
     environment: str = "development"
     debug: bool = True if environment == "development" else False
+    max_concurrent_requests: int = 5
 
     # API
     host: str = "0.0.0.0"
@@ -30,7 +31,9 @@ class Settings(BaseSettings):
     favorite_queue: str = "favorite_queue"
 
     # EXTERNAL APIs
+    api_timeout_seconds: int = 5
     product_api_url: str = "http://localhost:3000/api/product"
+    review_api_url: str = "http://localhost:3000/api/review"
 
     class Config:
         env_file = ".env"
