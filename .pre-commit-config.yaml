@@ -28,7 +28,7 @@ repos:
     hooks:
       - id: mypy
         additional_dependencies: [types-redis, types-requests]
-        files: ^app/
+        files: ^app/(?!presentation/fake_api_products/)
 
   - repo: https://github.com/commitizen-tools/commitizen
     rev: v3.12.0

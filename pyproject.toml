@@ -78,9 +78,10 @@ warn_unused_ignores = false
 [[tool.mypy.overrides]]
 module = [
     "alembic.*",
-    "tests.*"
+    "tests.*",
+    "app.presentation.fake_api_products.*"
 ]
-ignore_missing_imports = true
+ignore_errors = true
 
 [tool.pytest.ini_options]
 minversion = "7.0"

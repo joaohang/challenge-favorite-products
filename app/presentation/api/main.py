@@ -15,7 +15,7 @@ from app.presentation.api.routes.customer_favorite_product import (
 from app.presentation.api.middlewares.exception_handler import (
     catch_exceptions_middleware,
 )
-from app.presentation.api.security.auth import token_validator
+from app.presentation.api.dependencies.auth import token_validator
 from app.presentation.api.routes.auth import router as auth_router
 
 app = FastAPI(

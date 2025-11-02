@@ -22,6 +22,9 @@ install: ## Instalando as dependências
 run: ## Iniciando a API
 	poetry run python -m app.presentation.api.main
 
+run-fake-product-api: ## Iniciando a API fake de produtos
+	poetry run python -m app.presentation.fake_api_products.main
+
 test: ## Executando todos os testes
 	poetry run pytest
 
