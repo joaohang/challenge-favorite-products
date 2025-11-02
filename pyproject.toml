@@ -21,6 +21,8 @@ python-dotenv = "^1.0.0"
 python-multipart = "^0.0.6"
 pydantic-settings = "^2.11.0"
 email-validator = "^2.3.0"
+rq = "^2.6.0"
+requests = "^2.32.5"
 
 [tool.poetry.group.dev.dependencies]
 mypy = "^1.8.0"
@@ -29,6 +31,8 @@ flake8 = "^6.1.0"
 pre-commit = "^3.5.0"
 pytest = "^7.4.3"
 pytest-asyncio = "^0.21.1"
+rq-dashboard = "^0.8.5"
+types-requests = "^2.32.4.20250913"
 
 [tool.poetry.group.test.dependencies]
 pytest = "^7.4.3"

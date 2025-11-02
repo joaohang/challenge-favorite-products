@@ -1,3 +1,15 @@
+.PHONY: help run worker worker-verbose worker-burst worker-dashboard queue-info queue-clean-failed queue-retry-failed clean test show-config
+
+# Verifica se .env existe e carrega as variáveis
+ENV_FILE := .env
+ifneq (,$(wildcard $(ENV_FILE)))
+    include $(ENV_FILE)
+    export
+endif
+
+REDIS_URL := redis://$(REDIS_HOST):$(REDIS_PORT)/$(REDIS_DB)
+QUEUE_NAME = $(FAVORITE_QUEUE)
+
 pre-commit-install: ## Instala hooks para verificar no pré commit
 	poetry run pre-commit install --hook-type pre-commit --hook-type commit-msg
 
@@ -26,3 +38,10 @@ lint: ## Executando o lint
 	poetry run black app/
 	poetry run flake8 app/
 	poetry run mypy app/
+
+worker: # Sobe o worker com rq
+	poetry run rq worker $(QUEUE_NAME) --url $(REDIS_URL)
+
+worker-dashboard: # Sobe o rq dashboard
+	@echo "URL: http://localhost:9181"
+	poetry run rq-dashboard --redis-url $(REDIS_URL)

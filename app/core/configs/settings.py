@@ -26,6 +26,12 @@ class Settings(BaseSettings):
     redis_db: int = 0
     cache_ttl_seconds: int = 3600
 
+    # QUEUE
+    favorite_queue: str = "favorite_queue"
+
+    # EXTERNAL APIs
+    product_api_url: str = "http://localhost:3000/api/product"
+
     class Config:
         env_file = ".env"
         case_sensitive = False

@@ -6,7 +6,7 @@ class FavoriteProductCreate(BaseModel):
     product_id: str
 
 
-class FavoriteProductRead(BaseModel):
+class FavoriteProduct(BaseModel):
     model_config = ConfigDict(from_attributes=True)
     id: int
     customer_id: int
