@@ -2,14 +2,18 @@ from typing import Optional, Union
 
 
 class FakeRedis:
-    def __init__(self):
+    def __init__(self, decode_responses: bool = True):
         self.data = {}
+        self.decode_responses = decode_responses
 
-    def get(self, key: Union[str, bytes]) -> Optional[bytes]:
-        if isinstance(key, str):
-            key = key.encode("utf-8")
-
+    def get(self, key):
         value = self.data.get(key)
+
+        if value is None:
+            return None
+        if self.decode_responses and isinstance(value, bytes):
+            return value.decode("utf-8")
+
         return value
 
     def set(

@@ -37,7 +37,7 @@ app.add_middleware(
 
 
 app.include_router(health_router, tags=["Service Health"])
-app.include_router(auth_router, tags=["Authentication"])
+app.include_router(auth_router, prefix="/v1/auth", tags=["Authentication"])
 app.include_router(
     customer_router,
     prefix="/v1",

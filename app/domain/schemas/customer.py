@@ -1,8 +1,8 @@
-from pydantic import BaseModel, EmailStr, ConfigDict
+from pydantic import BaseModel, EmailStr, ConfigDict, Field
 
 
 class CustomerCreate(BaseModel):
-    name: str
+    name: str = Field(min_length=2)
     email: EmailStr
 
 

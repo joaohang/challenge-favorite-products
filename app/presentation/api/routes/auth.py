@@ -4,7 +4,7 @@ from app.domain.services.auth import AuthService
 from app.domain.schemas.auth import TokenRequest, TokenResponse
 from app.core.dependencies.auth import get_auth_service
 
-router = APIRouter(prefix="/auth")
+router = APIRouter()
 
 
 @router.post("/token", response_model=TokenResponse)
