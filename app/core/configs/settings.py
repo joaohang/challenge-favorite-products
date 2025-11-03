@@ -1,4 +1,4 @@
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
@@ -41,9 +41,9 @@ class Settings(BaseSettings):
     product_api_url: str = "http://localhost:3000/api/product"
     review_api_url: str = "http://localhost:3000/api/review"
 
-    class Config:
-        env_file = ".env"
-        case_sensitive = False
+    model_config = SettingsConfigDict(
+        env_file="/app/.env", env_file_encoding="utf-8", case_sensitive=False
+    )
 
 
 settings = Settings()
