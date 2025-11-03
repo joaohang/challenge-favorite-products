@@ -4,6 +4,7 @@ import redis
 
 from app.domain.services.auth import AuthService
 from app.infrastructure.cache.redis import get_redis
+from app.core.configs.settings import settings
 
 security_scheme = HTTPBearer(
     scheme_name="Bearer",
@@ -25,7 +26,7 @@ async def token_validator(
 
     token = credentials.credentials
 
-    auth_service = AuthService(redis_client)
+    auth_service = AuthService(redis_client, settings)
 
     if not auth_service.verify_access_token(token):
         raise HTTPException(
