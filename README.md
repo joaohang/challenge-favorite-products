@@ -84,15 +84,15 @@ curl -X 'POST' \
 ### Possíveis melhorias
 Acredito que há algumas possíveis melhorias no projeto, segue uma lista de coisas que poderiam ser aplicadas:
 
-- Concorrencia:
+- **Concorrencia:**
 Podem utilizar lock no Redis para controlar alguns itens que têm alta concorrência, exemplo caso tenhamos um número muito alto de tentativas de cadastrar o mesmo e-mail.
-- Dead Letter Queue(DLQ):
+- **Dead Letter Queue(DLQ):**
 Podemos configurar uma DLQ para caso o serviço de API de produtos esteja fora, assim teríamos uma maneira de reprocessar.
-- Arquitetura e injeção de dependencia:
+- **Arquitetura e injeção de dependencia:**
 O design desse projeto baseia-se em projetos nos quais já tive a experiência de trabalhar, mas sei que há algumas coisas da maneira como ele está estruturado que poderiam ser mais simples ou até mais completas, como por exemplo: melhorar a injeção de dependência, aplicando em mais pontos do sistema.
-- Testes:
+- **Testes:**
 Apliquei teste em pontos os quais eu acredito que seria possivel mostrar o meu conhecimento em trabalhar com testes, mas eles poderiam estar aplicados em mais partes do sistema.
-- Infraestrutura:
+- **Infraestrutura:**
 Em um cenário real, o sistema deve conter uma aplicação de load balancer na frente das APIs.
 APIs e Workers devem ter no mínimo 2 instâncias e estar configuradas com um sistema de Auto Scalling.
 O Redis deve estar em um cluster de Redis.

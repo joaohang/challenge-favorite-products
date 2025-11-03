@@ -14,6 +14,7 @@ from tests.infrastructure.fake_db import (
     override_get_db as override_fake_db,
     fake_db_instance,
 )
+from app.core.dependencies.settings import get_settings
 
 
 class TestSettings(Settings):
@@ -22,7 +23,7 @@ class TestSettings(Settings):
         case_sensitive = False
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="function")
 def test_settings():
     return TestSettings()
 
@@ -43,6 +44,7 @@ def db_session():
 def app(test_settings, redis_client, db_session):
     app = FastAPI()
 
+    app.dependency_overrides[get_settings] = lambda: test_settings
     app.dependency_overrides[get_redis] = override_get_redis
     app.dependency_overrides[get_db] = override_fake_db
 

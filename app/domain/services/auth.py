@@ -2,11 +2,11 @@ from datetime import datetime, timedelta
 from jose import jwt, JWTError
 import redis
 
-from app.core.configs.settings import settings
+from app.core.configs.settings import Settings
 
 
 class AuthService:
-    def __init__(self, redis_client: redis.Redis):
+    def __init__(self, redis_client: redis.Redis, settings: Settings):
         self.redis = redis_client
         self.api_token = settings.api_token
         self.secret_key = settings.jwt_secret_key
@@ -25,10 +25,10 @@ class AuthService:
         expire = datetime.utcnow() + timedelta(
             minutes=self.access_token_expire_minutes
         )
-        expires_in = self.access_token_expire_minutes * 60  # em segundos
+        expires_in = self.access_token_expire_minutes * 60
 
         to_encode = {
-            "sub": "microservice",  # identificador do cliente
+            "sub": "microservice",
             "exp": expire,
         }
 
@@ -55,7 +55,6 @@ class AuthService:
             return False
 
     def revoke_token(self, token: str) -> bool:
-        """Revoga um token (remove do cache)"""
         cache_key = self._get_token_cache_key(token)
         self.redis.delete(cache_key)
         return True

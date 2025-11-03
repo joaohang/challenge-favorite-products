@@ -36,6 +36,7 @@ pytest = "^7.4.3"
 pytest-asyncio = "^0.21.1"
 rq-dashboard = "^0.8.5"
 types-requests = "^2.32.4.20250913"
+pytest-cov = "^7.0.0"
 
 [tool.poetry.group.test.dependencies]
 pytest = "^7.4.3"
