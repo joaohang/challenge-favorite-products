@@ -1,6 +1,6 @@
 # challenge-favorite-products
 
-## INDICE
+## Índice
 
 - Meu entendimento sobre o desafio:
 - Como executar o projeto
@@ -19,6 +19,9 @@ Para isso eu criei uma rota com características de BFF para devolver essas info
 Como o enunciado também falava sobre um auto volume de requisições, eu apliquei cache em todos os lugares que achei pertinente, como por exemplo: validar se um email já existe.
 
 Também apliquei um sistema de fila e job para o endpoint que vincula um produto favorito a um cliente, isso porque acredito que este teria um maior volume de requisições e também porque depende de um serviço terceiro o qual não tenho controle, sendo assim ele pode estar indisponível em algum momento, e com um sistema de filas é possível sobrecarregar menos esse sistema e ter melhor controle para reprocessar se necessário.
+
+### Desenho da solução
+![System Design](./docs/system-design.png)
 
 ### Como executar o projeto
 
@@ -78,9 +81,19 @@ curl -X 'POST' \
   "email": "example@example.com"
 }'
 ```
-
 ### Possíveis melhorias
-Dado o tempo que tenho disponível para criar o teste não apliquei 100% do que acredito que seria o melhor para essa aplicação.
-Então sei que há algumas possiveis melhorias no projeto, segue uma lista de coisas que poderiam ser aplicadas:
+Acredito que há algumas possíveis melhorias no projeto, segue uma lista de coisas que poderiam ser aplicadas:
 
--
+- Concorrencia:
+Podem utilizar lock no Redis para controlar alguns itens que têm alta concorrência, exemplo caso tenhamos um número muito alto de tentativas de cadastrar o mesmo e-mail.
+- Dead Letter Queue(DLQ):
+Podemos configurar uma DLQ para caso o serviço de API de produtos esteja fora, assim teríamos uma maneira de reprocessar.
+- Arquitetura e injeção de dependencia:
+O design desse projeto baseia-se em projetos nos quais já tive a experiência de trabalhar, mas sei que há algumas coisas da maneira como ele está estruturado que poderiam ser mais simples ou até mais completas, como por exemplo: melhorar a injeção de dependência, aplicando em mais pontos do sistema.
+- Testes:
+Apliquei teste em pontos os quais eu acredito que seria possivel mostrar o meu conhecimento em trabalhar com testes, mas eles poderiam estar aplicados em mais partes do sistema.
+- Infraestrutura:
+Em um cenário real, o sistema deve conter uma aplicação de load balancer na frente das APIs.
+APIs e Workers devem ter no mínimo 2 instâncias e estar configuradas com um sistema de Auto Scalling.
+O Redis deve estar em um cluster de Redis.
+O bando de dados deve ter uma versão de escrita e uma réplica para leitura.
