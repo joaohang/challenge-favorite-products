@@ -85,7 +85,7 @@ curl -X 'POST' \
 Acredito que há algumas possíveis melhorias no projeto, segue uma lista de coisas que poderiam ser aplicadas:
 
 - **Concorrencia:**
-Podem utilizar lock no Redis para controlar alguns itens que têm alta concorrência, exemplo caso tenhamos um número muito alto de tentativas de cadastrar o mesmo e-mail.
+Podemos utilizar lock no Redis para controlar alguns itens que têm alta concorrência, exemplo caso tenhamos um número muito alto de tentativas de cadastrar o mesmo e-mail.
 - **Dead Letter Queue(DLQ):**
 Podemos configurar uma DLQ para caso o serviço de API de produtos esteja fora, assim teríamos uma maneira de reprocessar.
 - **Arquitetura e injeção de dependencia:**
