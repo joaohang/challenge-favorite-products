@@ -10,6 +10,9 @@ endif
 REDIS_URL := redis://$(REDIS_HOST):$(REDIS_PORT)/$(REDIS_DB)
 QUEUE_NAME = $(FAVORITE_QUEUE)
 
+create-env: ## Copia a env example
+	cp .env.example .env
+
 pre-commit-install: ## Instala hooks para verificar no pré commit
 	poetry run pre-commit install --hook-type pre-commit --hook-type commit-msg
 
@@ -27,9 +30,6 @@ run-fake-product-api: ## Iniciando a API fake de produtos
 
 test: ## Executando todos os testes
 	poetry run pytest
-
-test-cov: ## Executando todos os testes e vericando code coverage
-	poetry run pytest --cov=app
 
 run-build-containers:
 	docker compose -f infra/docker-compose.yml build
